@@ -1,0 +1,20 @@
+package com.spector.server_health_monitor.service
+
+import com.spector.server_health_monitor.entity.Server
+import com.spector.server_health_monitor.repository.ServerRepository
+import org.springframework.stereotype.Service
+
+@Service
+class ServerService (private val repository: ServerRepository) {
+
+    fun createServer(name: String, hostname: String, ipAddress: String? = null, port: Int, location: String? = null ): Server {
+        val server = Server(
+            name = name,
+            hostname = hostname,
+            ipAddress = ipAddress,
+            port = port,
+            location = location
+        )
+        return repository.save(server)
+    }
+}

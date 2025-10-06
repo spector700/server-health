@@ -14,5 +14,5 @@ class HealthControllerRestController {
     }
 
 }
-class HealthController {
-}
+//class HealthController {
+//}

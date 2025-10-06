@@ -8,5 +8,4 @@ class ServerHealthMonitorApplication
 
 fun main(args: Array<String>) {
 	runApplication<ServerHealthMonitorApplication>(*args)
-    print("amoung us")
 }
