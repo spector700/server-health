@@ -4,7 +4,7 @@ import com.spector.server_health_monitor.entity.Server
 import com.spector.server_health_monitor.repository.ServerRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class ServerService (private val repository: ServerRepository) {
