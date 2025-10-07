@@ -1,6 +1,9 @@
-import {createFileRoute, Link} from '@tanstack/react-router'
-import {Header} from "@/components/sections/header.tsx";
-import Section from "@/components/sections/section.tsx";
+import {createFileRoute} from '@tanstack/react-router'
+import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar.tsx";
+import React from "react";
+import {AppSidebar} from "@/components/app-sidebar.tsx";
+import {SiteHeader} from "@/components/site-header.tsx";
+import {ServerList} from "@/components/sections/server-list.tsx";
 
 export const Route = createFileRoute('/_layout/')({
     component: Index,
@@ -8,34 +11,29 @@ export const Route = createFileRoute('/_layout/')({
 
 function Index() {
     return (
-        <>
-            <Header/>
-            <Section id="hero">
-                {/* top left background gradient */}
-                <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-                     aria-hidden="true">
-                    <div
-                        className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] top-left-background-gradient sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
-                </div>
+        <SidebarProvider style={
+            {
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--sidebar-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties
+        }
+        >
 
-                {/* Hero content */}
-                <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-32">
-                    <div className="text-center">
-                        <h1 className="title-gradient text-4xl font-bold text-balance sm:text-6xl">Hi</h1>
-                        <p className="mt-6 text-lg text-muted-foreground">The description of Hi</p>
-                        <Link href="/" to={"/"}>
-                        </Link>
-                    </div>
-
-                    {/* bottom right background gradient */}
-                    <div
-                        className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
-                        aria-hidden="true">
-                        <div
-                            className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bottom-right-background-gradient sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"></div>
+            <AppSidebar variant="inset"/>
+            <SidebarInset>
+                <SiteHeader/>
+                <div className="flex flex-1 flex-col">
+                    <div className="@container/main flex flex-1 flex-col gap-2">
+                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                            <ServerList/>
+                            <div className="px-4 lg:px-6">
+                                {/*<ChartAreaInteractive/>*/}
+                            </div>
+                            {/*<DataTable data={data} />*/}
+                        </div>
                     </div>
                 </div>
-            </Section>
-        </>
+            </SidebarInset>
+        </SidebarProvider>
     )
 }
