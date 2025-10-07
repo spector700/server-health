@@ -1,6 +1,7 @@
 // import { MainLogo } from '@/components/common/main-logo'
 // import { MobileMenu } from '@/components/common/mobile-menu'
-// import { ThemeModeToggle } from '@/components/ui/theme-mode-toggle'
+import {ThemeModeToggle} from '@/components/ui/theme-mode-toggle'
+
 // import { MenuLinks } from '../common/menu-links'
 
 export function Header() {
@@ -14,7 +15,7 @@ export function Header() {
                 </ul>
 
                 <div className="hidden md:flex items-center space-x-5">
-                    {/*<ThemeModeToggle />*/}
+                    <ThemeModeToggle/>
                 </div>
                 {/*<MobileMenu />*/}
             </div>
