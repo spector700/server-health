@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:15           # Changed from postgres:15-alpine
+    container_name: server-monitor-db
+    environment:
+      POSTGRES_DB: server_monitor
+      POSTGRES_USER: monitor_user
+      POSTGRES_PASSWORD: monitor_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U monitor_user -d server_monitor" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  backend:
+    build: ./backend
+    container_name: server-monitor-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/server_monitor
+      SPRING_DATASOURCE_USERNAME: monitor_user
+      SPRING_DATASOURCE_PASSWORD: monitor_pass
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    container_name: server-monitor-frontend
+    ports:
+      - "3000:80"  # Map host port 3000 to container port 80
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
