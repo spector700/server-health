@@ -1,4 +1,4 @@
-import type {CreateServerRequest, Server} from '@/types/api';
+import type {Server} from '@/types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
@@ -18,7 +18,12 @@ export const serverApi = {
     },
 
     // POST create server
-    createServer: async (serverData: CreateServerRequest): Promise<Server> => {
+    createServer: async (serverData: {
+        name: string;
+        hostname: string;
+        ipAddress: string;
+        location: string
+    }): Promise<Server> => {
         const response = await fetch(`${API_BASE_URL}/servers`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
