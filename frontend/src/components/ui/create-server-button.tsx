@@ -16,11 +16,12 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {serverApi} from "@/services/api.tsx";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 
 export function CreateServerButton() {
+    const queryClient = useQueryClient();
 
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [open, setOpen] = useState(false);
 
     const formSchema = z.object({
         name: z.string().min(2).max(50),
@@ -47,29 +48,41 @@ export function CreateServerButton() {
         }
     })
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
 
-        try {
-            const newServer = await serverApi.createServer(values);
+    // Use TanStack Query mutation
+    const createMutation = useMutation({
+        mutationFn: async (values: z.infer<typeof formSchema>) => {
+            // Convert port string to number and prepare data
+            await serverApi.createServer(values);
+        },
+        onSuccess: async (newServer) => {
             console.log('Server created:', newServer);
-        } catch (error) {
+
+            // Invalidate and refetch servers query
+            await queryClient.invalidateQueries({queryKey: ['servers']});
+
+            // Close dialog and reset form
+            setOpen(false);
+            form.reset();
+        },
+        onError: (error) => {
             console.error('Error creating server:', error);
-            setError(error instanceof Error ? error.message : 'Failed to create server');
-        } finally {
-            setLoading(false)
         }
+    });
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        createMutation.mutate(values);
     }
 
     return (
         <div className="w-full">
-            <Dialog onOpenChange={() => setError(null)}>
+            <Dialog open={open} onOpenChange={(val) => {
+                setOpen(val)
+            }}>
                 <DialogTrigger asChild>
                     <Button variant="default" className="w-full flex justify-start items-center gap-2">
                         <PlusIcon/>
-                        {loading ? "Creating..." : "Add Server"}
+                        Add Server
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -141,13 +154,13 @@ export function CreateServerButton() {
                                         <FormItem>
                                             <FormLabel>Location</FormLabel>
                                             <FormControl>
-                                                <Input placeholder={`Dallas`} {...field} />
+                                                <Input placeholder={`Home`} {...field} />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
                                     )}/>
                             </div>
-                            {error && (
+                            {createMutation.isError && (
                                 <div style={{
                                     padding: '10px',
                                     background: '#fee',
@@ -155,14 +168,16 @@ export function CreateServerButton() {
                                     borderRadius: '4px',
                                     marginBottom: '10px'
                                 }}>
-                                    {error}</div>
+                                    {createMutation.error.message}
+                                </div>
                             )}
                             <DialogFooter>
                                 <DialogClose asChild>
                                     <Button variant="outline">Cancel</Button>
                                 </DialogClose>
                                 <Button type="submit"
-                                        disabled={loading}>{loading ? "Creating..." : "Create"}</Button>
+                                        disabled={createMutation.isPending}
+                                >{createMutation.isPending ? "Creating..." : "Create"}</Button>
                             </DialogFooter>
                         </form>
                     </Form>

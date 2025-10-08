@@ -1,58 +1,59 @@
-import {useEffect, useState} from 'react';
-import type {Server} from '@/types/api';
 import {serverApi} from '@/services/api';
-import {Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Badge} from "@/components/ui/badge.tsx";
-import {IconTrendingUp} from "@tabler/icons-react";
+import {Card, CardAction, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {TrashIcon} from "lucide-react";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 export function ServerList() {
-    const [servers, setServers] = useState<Server[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
-    useEffect(() => {
-        serverApi.getAllServers()
-            .then((data) => {
-                setServers(data);
-                setLoading(false);
-            })
-            .catch((err: Error) => {
-                setError(err.message);
-                setLoading(false);
-            });
-    }, []);
+    // Fetch all servers
+    const {data: servers = [], isLoading, isError, error} = useQuery({
+        queryKey: ['servers'],
+        queryFn: serverApi.getAllServers,
+    });
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+
+    // Delete server mutation
+    const deleteMutation = useMutation({
+        mutationFn: (id: string) => serverApi.deleteServer(id),
+        onSuccess: async () => {
+            // Refetch servers after deletion
+            await queryClient.invalidateQueries({queryKey: ['servers']});
+        },
+        onError: (error) => {
+            console.error('Error deleting server:', error);
+        }
+    });
+
+    if (isLoading) return <div className="p-4">Loading servers...</div>;
+    if (isError) return <div className="p-4 text-red-500">Error loading servers: {error?.message}</div>;
+    if (servers.length === 0) return <div className="p-4">No servers yet. Create one!</div>;
 
     return (
         <div
-            className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-">
+            className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid gap-6 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-">
 
             {servers.map((server) => (
                 <Card className="@container/card" key={server.id}>
                     <CardHeader>
-                        <CardDescription><strong>{server.name}</strong> - {server.hostname}</CardDescription>
                         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
                             <strong>{server.name}</strong> - {server.hostname}
                         </CardTitle>
                         <CardAction>
-                            <Badge variant="outline">
-                                <IconTrendingUp/>
-                                +12.5%
-                            </Badge>
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => deleteMutation.mutate(server.id)}
+                            ><TrashIcon/></Button>
                         </CardAction>
                     </CardHeader>
                     <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                        <div className="line-clamp-1 flex gap-2 font-medium">
-                            Trending up this month <IconTrendingUp className="size-4"/>
-                        </div>
                         <div className="text-muted-foreground">
                             {server.location && ` (${server.location})`}
                         </div>
                     </CardFooter>
                 </Card>
-
             ))}
         </div>
     );
