@@ -7,9 +7,15 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class ServerService (private val repository: ServerRepository) {
+class ServerService(private val repository: ServerRepository) {
 
-    fun createServer(name: String, hostname: String, ipAddress: String? = null, port: Int, location: String? = null ): Server {
+    fun createServer(
+        name: String,
+        hostname: String? = null,
+        ipAddress: String?,
+        port: Int,
+        location: String? = null
+    ): Server {
         val server = Server(
             name = name,
             hostname = hostname,
