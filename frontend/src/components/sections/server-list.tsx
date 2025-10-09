@@ -1,9 +1,10 @@
 import {serverApi} from '@/services/api';
-import {Card, CardAction, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {TrashIcon} from "lucide-react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {ServerStatusBadge} from "@/components/ui/server-status-badge.tsx";
+import {ChartAreaInteractive} from "@/components/chart-area-interactive.tsx";
 
 export function ServerList() {
     const queryClient = useQueryClient();
@@ -41,6 +42,9 @@ export function ServerList() {
                         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
                             <strong>{server.name}</strong> - {server.hostname}
                         </CardTitle>
+                        <CardContent className="mt-4 ">
+                            <ChartAreaInteractive serverId={server.id}/>
+                        </CardContent>
                         <CardAction>
                             <ServerStatusBadge serverId={server.id}/>
                             <Button
@@ -50,11 +54,14 @@ export function ServerList() {
                             ><TrashIcon/></Button>
                         </CardAction>
                     </CardHeader>
-                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                        <div className="text-muted-foreground">
-                            {server.location && ` (${server.location})`}
-                        </div>
-                    </CardFooter>
+
+                    {server.location &&
+                        <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                            <div className="text-muted-foreground">
+                                {`${server.location}`}
+                            </div>
+                        </CardFooter>
+                    }
                 </Card>
             ))}
         </div>

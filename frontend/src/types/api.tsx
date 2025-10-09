@@ -13,5 +13,6 @@ export interface HealthMetric {
     id: string;
     serverId: string;
     status: 'UP' | 'DOWN';
+    responseTime: number;
     timestamp: string;
 }
