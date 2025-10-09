@@ -1,4 +1,4 @@
-import type {Server} from '@/types/api';
+import type {HealthMetric, Server} from '@/types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
@@ -41,3 +41,20 @@ export const serverApi = {
         if (!response.ok) throw new Error('Failed to delete server');
     }
 };
+
+export const healthMetricApi = {
+    getServerHistory: async (serverId: string, hours: number = 24): Promise<HealthMetric[]> => {
+        const response = await fetch(`${API_BASE_URL}/v1/health-metrics/server/${serverId}?hours=${hours}`);
+        if (!response.ok) throw new Error('Failed to fetch history');
+        return response.json();
+    },
+
+    getLatestStatus: async (serverId: string): Promise<HealthMetric | null> => {
+        const response = await fetch(`${API_BASE_URL}/v1/health-metrics/server/${serverId}/latest`);
+        if (!response.ok) {
+            if (response.status === 404) return null; // No checks yet
+            throw new Error('Failed to fetch status');
+        }
+        return response.json();
+    },
+}

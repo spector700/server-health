@@ -9,24 +9,9 @@ export interface Server {
     updatedAt: string;  // ISO date string
 }
 
-export interface CreateServerRequest {
-    name: string;
-    hostname: string;
-    ipAddress?: string;
-    port: number;
-    location?: string;
-}
-
 export interface HealthMetric {
     id: string;
     serverId: string;
-    cpuUsage: number;
-    memoryUsage: number;
-    memoryTotalMb: number;
-    memoryUsedMb: number;
-    diskUsage: number;
-    diskTotalGb: number;
-    diskUsedGb: number;
-    status: 'healthy' | 'warning' | 'critical';
+    status: 'UP' | 'DOWN';
     timestamp: string;
 }

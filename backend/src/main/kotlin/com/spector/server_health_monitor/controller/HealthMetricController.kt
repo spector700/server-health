@@ -7,7 +7,9 @@ import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/health-metrics")
-class HealthMetricController(private val healthMetricService: HealthMetricService) {
+class HealthMetricController(
+    private val healthMetricService: HealthMetricService
+) {
     @GetMapping("/server/{serverId}")
     fun getServerHistory(
         @PathVariable serverId: UUID,
@@ -28,4 +30,11 @@ class HealthMetricController(private val healthMetricService: HealthMetricServic
         val uptime = healthMetricService.getUptimePercentage(serverId)
         return mapOf("uptimePercentage" to uptime)
     }
+
+    // Get uptime percentage
+    @GetMapping("/server/{serverId}/ping")
+    fun checkServer(@PathVariable serverId: UUID): HealthMetric {
+        return healthMetricService.checkServerNow(serverId)
+    }
+
 }

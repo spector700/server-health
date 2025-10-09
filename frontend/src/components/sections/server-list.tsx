@@ -3,6 +3,7 @@ import {Card, CardAction, CardFooter, CardHeader, CardTitle} from "@/components/
 import {Button} from "@/components/ui/button.tsx";
 import {TrashIcon} from "lucide-react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {ServerStatusBadge} from "@/components/ui/server-status-badge.tsx";
 
 export function ServerList() {
     const queryClient = useQueryClient();
@@ -41,6 +42,7 @@ export function ServerList() {
                             <strong>{server.name}</strong> - {server.hostname}
                         </CardTitle>
                         <CardAction>
+                            <ServerStatusBadge serverId={server.id}/>
                             <Button
                                 size="sm"
                                 variant="ghost"
