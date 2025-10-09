@@ -32,18 +32,18 @@ class HealthMetricService(
     // Check a single server
     fun checkServer(server: Server): HealthMetric {
         val startTime = System.currentTimeMillis()
-        //TODO fix status checking
         val isUp = try {
             pingServer(server.ipAddress, server.port)
         } catch (e: Exception) {
             println("Error pinging server ${server.ipAddress}: ${e.message}")
             false
         }
+        val status = if (isUp) "UP" else "DOWN"
 
         val responseTime = System.currentTimeMillis() - startTime
         return HealthMetric(
             serverId = server.id,
-            status = isUp.toString(),
+            status = status,
             responseTimeMs = responseTime,
             timestamp = LocalDateTime.now(),
         )
@@ -77,6 +77,14 @@ class HealthMetricService(
 
     fun getLatestStatus(serverId: UUID): HealthMetric? {
         return healthMetricRepository.findFirstByServerIdOrderByTimestampDesc(serverId)
+    }
+
+    // Manual trigger (for testing)
+    fun checkServerNow(serverId: UUID): HealthMetric {
+        val server = serverRepository.findById(serverId)
+            .orElseThrow { IllegalArgumentException("Server not found") }
+        val result = checkServer(server)
+        return healthMetricRepository.save(result)
     }
 
 }
