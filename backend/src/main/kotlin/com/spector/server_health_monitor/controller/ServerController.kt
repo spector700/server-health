@@ -10,14 +10,21 @@ import java.util.*
 class ServerController(val serverService: ServerService) {
     data class CreateServerRequest(
         val name: String,
-        val hostname: String,
-        val ipAddress: String? = null,
+        val hostname: String?,
+        val ipAddress: String,
         val port: Int,
-        val location: String? = null)
+        val location: String? = null
+    )
 
-        @PostMapping
+    @PostMapping
     fun create(@RequestBody request: CreateServerRequest): Server {
-        return serverService.createServer(request.name, request.hostname, request.ipAddress, request.port, request.location)
+        return serverService.createServer(
+            request.name,
+            request.hostname,
+            request.ipAddress,
+            request.port,
+            request.location
+        )
     }
 
     @GetMapping
@@ -32,6 +39,6 @@ class ServerController(val serverService: ServerService) {
 
     @DeleteMapping("/{id}")
     fun deleteServerById(@PathVariable id: UUID): Server? {
-         return serverService.deleteServerById(id)
+        return serverService.deleteServerById(id)
     }
 }

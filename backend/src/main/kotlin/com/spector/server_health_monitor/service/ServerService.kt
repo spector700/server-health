@@ -12,7 +12,7 @@ class ServerService(private val repository: ServerRepository) {
     fun createServer(
         name: String,
         hostname: String? = null,
-        ipAddress: String?,
+        ipAddress: String,
         port: Int,
         location: String? = null
     ): Server {

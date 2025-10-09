@@ -17,13 +17,14 @@ class HealthMetricService(
     private val healthMetricRepository: HealthMetricRepository
 ) {
     // Try to connect to server
-    fun pingServer(ip: String?, port: Int): Boolean {
+    fun pingServer(ip: String, port: Int): Boolean {
         return try {
             Socket().use { socket ->
                 socket.connect(InetSocketAddress(ip, port))
                 true
             }
         } catch (e: Exception) {
+            println(e.message)
             false
         }
     }
@@ -31,6 +32,7 @@ class HealthMetricService(
     // Check a single server
     fun checkServer(server: Server): HealthMetric {
         val startTime = System.currentTimeMillis()
+        //TODO fix status checking
         val isUp = try {
             pingServer(server.ipAddress, server.port)
         } catch (e: Exception) {
@@ -51,7 +53,6 @@ class HealthMetricService(
     @Scheduled(fixedRate = 300000)
     fun checkAllServersUptime() {
         println("Running checking for servers: ${LocalDateTime.now()}")
-        serverRepository.findAll()
         val servers = serverRepository.findAll()
 
         servers.forEach { server ->
