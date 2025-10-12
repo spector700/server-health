@@ -2,13 +2,14 @@ package com.spector.server_health_monitor.controller
 
 import com.spector.server_health_monitor.entity.Server
 import com.spector.server_health_monitor.service.ServerService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
 @RequestMapping("/api/servers")
 class ServerController(val serverService: ServerService) {
-    data class CreateServerRequest(
+    data class ServerRequest(
         val name: String,
         val hostname: String?,
         val ipAddress: String,
@@ -17,7 +18,7 @@ class ServerController(val serverService: ServerService) {
     )
 
     @PostMapping
-    fun create(@RequestBody request: CreateServerRequest): Server {
+    fun create(@RequestBody request: ServerRequest): Server {
         return serverService.createServer(
             request.name,
             request.hostname,
@@ -25,6 +26,26 @@ class ServerController(val serverService: ServerService) {
             request.port,
             request.location
         )
+    }
+
+    @PutMapping("/{id}")
+    fun updateServer(
+        @PathVariable id: UUID,
+        @RequestBody request: ServerRequest
+    ): ResponseEntity<Server> {
+        return try {
+            val updatedServer = serverService.updateServer(
+                id = id,
+                name = request.name,
+                hostname = request.hostname,
+                ipAddress = request.ipAddress,
+                port = request.port,
+                location = request.location
+            )
+            ResponseEntity.ok(updatedServer)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.notFound().build()
+        }
     }
 
     @GetMapping

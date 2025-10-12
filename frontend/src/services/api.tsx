@@ -1,4 +1,4 @@
-import type {HealthMetric, Server} from '@/types/api';
+import type {CreateServerRequest, HealthMetric, Server, UpdateServerRequest} from '@/types/api';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
@@ -25,6 +25,16 @@ export const serverApi = {
             body: JSON.stringify(serverData)
         });
         if (!response.ok) throw new Error('Failed to create server');
+        return response.json();
+    },
+
+    updateServer: async (id: string, serverData: UpdateServerRequest): Promise<Server> => {
+        const response = await fetch(`${API_BASE_URL}/servers/${id}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(serverData)
+        })
+        if (!response.ok) throw new Error('Failed to update server');
         return response.json();
     },
 

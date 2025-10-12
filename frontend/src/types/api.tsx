@@ -9,6 +9,22 @@ export interface Server {
     updatedAt: string;  // ISO date string
 }
 
+export interface CreateServerRequest {
+    name: string;
+    hostname: string;
+    ipAddress?: string;
+    port: string;
+    location?: string;
+}
+
+export interface UpdateServerRequest {
+    name: string;
+    hostname: string;
+    ipAddress?: string;
+    port: string;
+    location?: string;
+}
+
 export interface HealthMetric {
     id: string;
     serverId: string;

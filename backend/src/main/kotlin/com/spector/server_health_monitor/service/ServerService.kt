@@ -26,6 +26,28 @@ class ServerService(private val repository: ServerRepository) {
         return repository.save(server)
     }
 
+    fun updateServer(
+        id: UUID,
+        name: String,
+        hostname: String? = null,
+        ipAddress: String,
+        port: Int,
+        location: String? = null
+    ): Server {
+        val existingServer =
+            repository.findById(id).orElseThrow { IllegalArgumentException("Server with id $id not found") }
+
+        // Create updated server (since we're using data class with val)
+        val updatedServer = existingServer.copy(
+            name = name,
+            hostname = hostname,
+            ipAddress = ipAddress,
+            port = port,
+            location = location
+        )
+        return repository.save(updatedServer)
+    }
+
     fun getAllServers(): List<Server> {
         return repository.findAll()
     }
