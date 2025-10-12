@@ -2,8 +2,8 @@ export interface Server {
     id: string;
     name: string;
     hostname: string;
-    ipAddress: string | null;
-    port: number;
+    ipAddress: string;
+    port: string;
     location: string | null;
     createdAt: string;  // ISO date string
     updatedAt: string;  // ISO date string

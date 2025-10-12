@@ -18,12 +18,7 @@ export const serverApi = {
     },
 
     // POST create server
-    createServer: async (serverData: {
-        name: string;
-        hostname: string;
-        ipAddress: string;
-        location: string
-    }): Promise<Server> => {
+    createServer: async (serverData: CreateServerRequest): Promise<Server> => {
         const response = await fetch(`${API_BASE_URL}/servers`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
