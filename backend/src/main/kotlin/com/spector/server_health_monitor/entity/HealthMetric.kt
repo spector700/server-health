@@ -19,8 +19,8 @@ class HealthMetric(
     @Column(nullable = false)
     val status: String,
 
-    @Column(name = "response_time_ms")
-    val responseTimeMs: Long? = null, // How long the check took
+    @Column(name = "response_time")
+    val responseTime: Long? = null,
 
     @Column(nullable = false)
     val timestamp: LocalDateTime = LocalDateTime.now(),

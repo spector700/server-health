@@ -40,11 +40,10 @@ class HealthMetricService(
         }
         val status = if (isUp) "UP" else "DOWN"
 
-        val responseTime = System.currentTimeMillis() - startTime
         return HealthMetric(
             serverId = server.id,
             status = status,
-            responseTimeMs = responseTime,
+            responseTime = System.currentTimeMillis() - startTime,
             timestamp = LocalDateTime.now(),
         )
     }
