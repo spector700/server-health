@@ -1,9 +1,6 @@
 package com.spector.server_health_monitor.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
 
@@ -31,5 +28,9 @@ data class Server(
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "updated_at", nullable = false)
-    val updatedAt: LocalDateTime = LocalDateTime.now()
+    val updatedAt: LocalDateTime = LocalDateTime.now(),
+
+    // Add relationship with cascade delete
+    @OneToMany(mappedBy = "server", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val healthMetrics: MutableList<HealthMetric> = mutableListOf(),
 )
