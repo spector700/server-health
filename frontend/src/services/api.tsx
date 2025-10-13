@@ -48,12 +48,14 @@ export const serverApi = {
 };
 
 export const healthMetricApi = {
+    // Get a list of all the server timestamps
     getServerHistory: async (serverId: string, hours: number = 24): Promise<HealthMetric[]> => {
         const response = await fetch(`${API_BASE_URL}/v1/health-metrics/server/${serverId}?hours=${hours}`);
         if (!response.ok) throw new Error('Failed to fetch history');
         return response.json();
     },
 
+    // Get latest timestamp
     getLatestStatus: async (serverId: string): Promise<HealthMetric | null> => {
         const response = await fetch(`${API_BASE_URL}/v1/health-metrics/server/${serverId}/latest`);
         if (!response.ok) {

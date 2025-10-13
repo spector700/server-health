@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {useForm} from "react-hook-form";
+import {type Resolver, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
 import {Input} from "@/components/ui/input.tsx";
@@ -10,14 +10,12 @@ import {Button} from "@/components/ui/button.tsx";
 const serverFormSchema = z.object({
     name: z.string().min(2).max(50),
     hostname: z.string().min(2).max(50),
+    // optional ip address
     ipAddress: z.string().regex(
         /^(?:\d{1,3}\.){3}\d{1,3}$/,
         "Must be a valid IPv4 address"
     ).optional().or(z.literal('')),
-    port: z.string().refine(val => {
-        const n = Number(val);
-        return n >= 1 && n <= 65535 && Number.isInteger(n);
-    }, "Invalid port number"),
+    port: z.coerce.number().min(1).max(65535),
     // optional location
     location: z.string().min(2).max(50).optional().or(z.literal('')),
 });
@@ -40,12 +38,12 @@ export function ServerForm({
                                submitLabel = "Submit"
                            }: ServerFormProps) {
     const form = useForm<ServerFormValues>({
-        resolver: zodResolver(serverFormSchema),
+        resolver: zodResolver(serverFormSchema) as Resolver<ServerFormValues>,
         defaultValues: {
             name: defaultValues?.name || "",
             hostname: defaultValues?.hostname || "",
             ipAddress: defaultValues?.ipAddress || "",
-            port: defaultValues?.port || "80",
+            port: defaultValues?.port || 80,
             location: defaultValues?.location || "",
         }
     });
@@ -103,7 +101,10 @@ export function ServerForm({
                                 <FormItem>
                                     <FormLabel>Port</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="80" {...field} />
+                                        <Input
+                                            placeholder="80"
+                                            type="number"
+                                            {...field} />
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
@@ -158,4 +159,4 @@ export function ServerForm({
             </form>
         </Form>
     )
-};
+}

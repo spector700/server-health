@@ -3,7 +3,7 @@ export interface Server {
     name: string;
     hostname: string;
     ipAddress: string;
-    port: string;
+    port: number;
     location: string | null;
     createdAt: string;  // ISO date string
     updatedAt: string;  // ISO date string
@@ -13,7 +13,7 @@ export interface CreateServerRequest {
     name: string;
     hostname: string;
     ipAddress?: string;
-    port: string;
+    port: number;
     location?: string;
 }
 
@@ -21,7 +21,7 @@ export interface UpdateServerRequest {
     name: string;
     hostname: string;
     ipAddress?: string;
-    port: string;
+    port: number;
     location?: string;
 }
 

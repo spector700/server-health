@@ -5,6 +5,7 @@ import {TrashIcon} from "lucide-react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {ServerStatusBadge} from "@/components/ui/server-status-badge.tsx";
 import {ChartAreaInteractive} from "@/components/chart-area-interactive.tsx";
+import {EditServerButton} from "@/components/ui/edit-server-button.tsx";
 
 export function ServerList() {
     const queryClient = useQueryClient();
@@ -39,13 +40,17 @@ export function ServerList() {
             {servers.map((server) => (
                 <Card className="@container/card" key={server.id}>
                     <CardHeader>
-                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                            <strong>{server.name}</strong> - {server.hostname}
-                        </CardTitle>
-                        <CardContent className="mt-4 ">
+                        <div className="flex items-center justify-start gap-3">
+                            <EditServerButton server={server}/>
+                            <CardTitle
+                                className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                                <strong>{server.name}</strong> - {server.hostname}
+                            </CardTitle>
+                        </div>
+                        <CardContent className="mt-4">
                             <ChartAreaInteractive serverId={server.id}/>
                         </CardContent>
-                        <CardAction>
+                        <CardAction className="flex items-center gap-3">
                             <ServerStatusBadge serverId={server.id}/>
                             <Button
                                 size="sm"
