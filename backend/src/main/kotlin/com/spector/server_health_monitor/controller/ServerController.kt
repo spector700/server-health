@@ -12,6 +12,7 @@ class ServerController(val serverService: ServerService) {
     data class ServerRequest(
         val name: String,
         val hostname: String?,
+        val checkType: String = "ping",
         val ipAddress: String,
         val port: Int,
         val location: String? = null
@@ -23,6 +24,7 @@ class ServerController(val serverService: ServerService) {
             request.name,
             request.hostname,
             request.ipAddress,
+            request.checkType,
             request.port,
             request.location
         )
@@ -38,6 +40,7 @@ class ServerController(val serverService: ServerService) {
                 id = id,
                 name = request.name,
                 hostname = request.hostname,
+                checkType = request.checkType,
                 ipAddress = request.ipAddress,
                 port = request.port,
                 location = request.location

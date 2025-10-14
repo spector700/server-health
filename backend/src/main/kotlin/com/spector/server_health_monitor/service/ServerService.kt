@@ -12,6 +12,7 @@ class ServerService(private val repository: ServerRepository) {
     fun createServer(
         name: String,
         hostname: String? = null,
+        checkType: String = "ping",
         ipAddress: String,
         port: Int,
         location: String? = null
@@ -19,6 +20,7 @@ class ServerService(private val repository: ServerRepository) {
         val server = Server(
             name = name,
             hostname = hostname,
+            checkType = checkType,
             ipAddress = ipAddress,
             port = port,
             location = location
@@ -30,6 +32,7 @@ class ServerService(private val repository: ServerRepository) {
         id: UUID,
         name: String,
         hostname: String? = null,
+        checkType: String,
         ipAddress: String,
         port: Int,
         location: String? = null
@@ -37,11 +40,12 @@ class ServerService(private val repository: ServerRepository) {
         val existingServer =
             repository.findById(id).orElseThrow { IllegalArgumentException("Server with id $id not found") }
 
-        // Create updated server (since we're using data class with val)
+        // Create updated server
         val updatedServer = existingServer.copy(
             name = name,
             hostname = hostname,
             ipAddress = ipAddress,
+            checkType = checkType,
             port = port,
             location = location
         )

@@ -60,6 +60,7 @@ export function EditServerButton({server}: EditServerButtonProps) {
                     defaultValues={{
                         name: server.name,
                         hostname: server.hostname,
+                        checkType: server.checkType,
                         ipAddress: server.ipAddress || "",
                         port: server.port,
                         location: server.location || "",

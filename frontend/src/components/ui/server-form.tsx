@@ -5,11 +5,13 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {Input} from "@/components/ui/input.tsx";
 import {DialogClose, DialogFooter} from "@/components/ui/dialog.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 
 
 const serverFormSchema = z.object({
     name: z.string().min(2).max(50),
     hostname: z.string().min(2).max(50),
+    checkType: z.enum(['ping', 'port']).default('ping'),
     // optional ip address
     ipAddress: z.string().regex(
         /^(?:\d{1,3}\.){3}\d{1,3}$/,
@@ -42,6 +44,7 @@ export function ServerForm({
         defaultValues: {
             name: defaultValues?.name || "",
             hostname: defaultValues?.hostname || "",
+            checkType: defaultValues?.checkType || "ping",
             ipAddress: defaultValues?.ipAddress || "",
             port: defaultValues?.port || 80,
             location: defaultValues?.location || "",
@@ -74,6 +77,32 @@ export function ServerForm({
                                 <FormControl>
                                     <Input placeholder="server.local" {...field} />
                                 </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        name="checkType"
+                        control={form.control}
+                        render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Check Type</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    value={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select check type"/>
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="ping">Ping (ICMP)</SelectItem>
+                                        <SelectItem value="port">Port</SelectItem>
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage/>
                             </FormItem>
                         )}

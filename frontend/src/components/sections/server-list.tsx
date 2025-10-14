@@ -6,6 +6,7 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {ServerStatusBadge} from "@/components/ui/server-status-badge.tsx";
 import {ChartAreaInteractive} from "@/components/chart-area-interactive.tsx";
 import {EditServerButton} from "@/components/ui/edit-server-button.tsx";
+import {Badge} from "@/components/ui/badge.tsx";
 
 export function ServerList() {
     const queryClient = useQueryClient();
@@ -65,10 +66,15 @@ export function ServerList() {
                     </CardHeader>
 
                     {server.location &&
-                        <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                        <CardFooter className="flex-col items-start gap-1 text-sm">
                             <div className="text-muted-foreground">
-                                {`${server.location}`}
+                                {server.ipAddress && `IP: ${server.ipAddress} • `}
+                                Port: {server.port}
+                                {server.location && ` • ${server.location}`}
                             </div>
+                            <Badge variant="outline" className="text-xs">
+                                {server.checkType}
+                            </Badge>
                         </CardFooter>
                     }
                 </Card>

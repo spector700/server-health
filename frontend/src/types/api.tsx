@@ -2,6 +2,7 @@ export interface Server {
     id: string;
     name: string;
     hostname: string;
+    checkType: 'ping' | 'port'
     ipAddress: string;
     port: number;
     location: string | null;
@@ -12,6 +13,7 @@ export interface Server {
 export interface CreateServerRequest {
     name: string;
     hostname: string;
+    checkType: 'ping' | 'port'
     ipAddress?: string;
     port: number;
     location?: string;
@@ -20,6 +22,7 @@ export interface CreateServerRequest {
 export interface UpdateServerRequest {
     name: string;
     hostname: string;
+    checkType: 'ping' | 'port'
     ipAddress?: string;
     port: number;
     location?: string;

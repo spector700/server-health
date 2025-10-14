@@ -6,6 +6,7 @@ import com.spector.server_health_monitor.repository.HealthMetricRepository
 import com.spector.server_health_monitor.repository.ServerRepository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.time.LocalDateTime
@@ -16,26 +17,42 @@ class HealthMetricService(
     private val serverRepository: ServerRepository,
     private val healthMetricRepository: HealthMetricRepository
 ) {
-    // Try to connect to server
-    fun pingServer(ip: String, port: Int): Boolean {
+    // Helper function to check port
+    fun checkPort(ip: String, port: Int): Boolean {
         return try {
             Socket().use { socket ->
                 socket.connect(InetSocketAddress(ip, port))
                 true
             }
         } catch (e: Exception) {
-            println(e.message)
+            println("Error checking port for ${ip}:${port}: ${e.message}")
             false
         }
     }
 
-    // Check a single server
+    // Helper function to check Ping
+    fun checkPing(ip: String): Boolean {
+        return try {
+            val address = InetAddress.getByName(ip)
+            address.isReachable(3000)
+        } catch (e: Exception) {
+            println("Error pinging for ${ip}: ${e.message}")
+            false
+        }
+    }
+
+    // Check a single server with the checkType
     fun checkServer(server: Server): HealthMetric {
         val startTime = System.currentTimeMillis()
         val isUp = try {
-            pingServer(server.ipAddress, server.port)
+            when (server.checkType) {
+                "ping" -> checkPing(server.ipAddress)
+                "port" -> checkPort(server.ipAddress, server.port)
+                // Default to ping
+                else -> checkPing(server.ipAddress)
+            }
         } catch (e: Exception) {
-            println("Error pinging server ${server.ipAddress}: ${e.message}")
+            println("Error checking server ${server.ipAddress}: ${e.message}")
             false
         }
         val status = if (isUp) "UP" else "DOWN"
@@ -57,7 +74,7 @@ class HealthMetricService(
         servers.forEach { server ->
             val result = checkServer(server)
             healthMetricRepository.save(result)
-            println("Checked ${server.name}: ${result.status}")
+            println("Checked ${server.name}: (${server.checkType}): ${result.status}")
         }
     }
 

@@ -16,6 +16,9 @@ data class Server(
     @Column(nullable = false)
     val hostname: String?,
 
+    @Column(name = "check_type", nullable = false)
+    val checkType: String = "ping", // "port" or "ping"
+
     @Column(name = "ip_address", nullable = false)
     val ipAddress: String,
 

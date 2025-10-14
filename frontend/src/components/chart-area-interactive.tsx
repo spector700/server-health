@@ -59,7 +59,7 @@ export function ChartAreaInteractive({serverId}: ServerHistoryChartProps) {
 
         return history
             // Filter out offline checks
-            // .filter(metric => metric.status === "UP" && metric.responseTime !== null)
+            .filter(metric => metric.status === "UP" && metric.responseTime !== null)
             .map((metric) => ({
                 date: metric.timestamp,
                 responseTime: metric.responseTime || 0,
@@ -67,6 +67,7 @@ export function ChartAreaInteractive({serverId}: ServerHistoryChartProps) {
             }));
     }, [history]);
 
+    // Gives padding to the top and bottom of the chart
     const {minResponseTime, maxResponseTime} = useMemo(() => {
         if (chartData.length === 0) {
             return {minResponseTime: 0, maxResponseTime: 100};
@@ -104,9 +105,6 @@ export function ChartAreaInteractive({serverId}: ServerHistoryChartProps) {
         <Card className="@container/card">
             <CardHeader>
                 <CardTitle>Response Time</CardTitle>
-                <CardDescription>
-                    Server response time over the selected period
-                </CardDescription>
                 <CardAction>
                     <ToggleGroup
                         type="single"
