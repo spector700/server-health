@@ -19,6 +19,14 @@ A full-stack server monitoring application that tracks infrastructure health and
 - **Containerized Deployment**: Docker Compose for one-command setup
 - **Type-Safe Frontend**: Full TypeScript implementation with Zod validation
 
+### Dashboard
+
+![pic-1](.github/assets/pic-1.png)
+
+---
+
+![pic-2](.github/assets/pic-2.png)
+
 ##  Tech Stack
 
 ### Backend
