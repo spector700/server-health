@@ -5,7 +5,7 @@ COPY . .
 RUN gradle bootJar --no-daemon
 
 # Stage 1: Run the application
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
