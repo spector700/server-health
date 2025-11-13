@@ -14,7 +14,7 @@ class ServerService(private val repository: ServerRepository) {
         hostname: String? = null,
         checkType: String = "ping",
         ipAddress: String,
-        port: Int,
+        port: Int? = null,
         location: String? = null
     ): Server {
         val server = Server(
@@ -34,9 +34,13 @@ class ServerService(private val repository: ServerRepository) {
         hostname: String? = null,
         checkType: String,
         ipAddress: String,
-        port: Int,
+        port: Int? = null,
         location: String? = null
     ): Server {
+        if (checkType == "port" && port == null) {
+            throw IllegalArgumentException("Port is required for port check type")
+        }
+
         val existingServer =
             repository.findById(id).orElseThrow { IllegalArgumentException("Server with id $id not found") }
 

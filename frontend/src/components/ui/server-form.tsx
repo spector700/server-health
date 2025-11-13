@@ -17,9 +17,19 @@ const serverFormSchema = z.object({
         /^(?:\d{1,3}\.){3}\d{1,3}$/,
         "Must be a valid IPv4 address"
     ).optional().or(z.literal('')),
-    port: z.coerce.number().min(1).max(65535),
+    port: z.coerce.number().min(1).max(65535).optional(),
     // optional location
     location: z.string().min(2).max(50).optional().or(z.literal('')),
+}).refine((data) => {
+    if (data.checkType === "port") {
+        if (!data.port) return false;
+        // Check if port is in range
+        if (!(data.port > 1 && data.port <= 65535)) return false;
+    }
+    return true;
+}, {
+    message: "Port is required and must be between 1 and 65535 for port checks",
+    path: ["port"],
 });
 
 export type ServerFormValues = z.infer<typeof serverFormSchema>
@@ -46,10 +56,14 @@ export function ServerForm({
             hostname: defaultValues?.hostname || "",
             checkType: defaultValues?.checkType || "ping",
             ipAddress: defaultValues?.ipAddress || "",
-            port: defaultValues?.port || 80,
+            port: defaultValues?.port || 8080,
             location: defaultValues?.location || "",
         }
     });
+
+    // Watch checkType to conditionally show port field
+    const checkType: string = form.watch('checkType');
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -122,23 +136,24 @@ export function ServerForm({
                                 </FormItem>
                             )}
                         />
-
-                        <FormField
-                            name="port"
-                            control={form.control}
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Port</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="80"
-                                            type="number"
-                                            {...field} />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
+                        {checkType === "port" && (
+                            <FormField
+                                name="port"
+                                control={form.control}
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Port</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="8080"
+                                                type="number"
+                                                {...field} />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                     </div>
 
                     <FormField

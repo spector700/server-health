@@ -22,8 +22,8 @@ data class Server(
     @Column(name = "ip_address", nullable = false)
     val ipAddress: String,
 
-    @Column(nullable = false)
-    val port: Int,
+    @Column(nullable = true)
+    val port: Int? = null,
 
     val location: String? = null,
 

@@ -18,10 +18,10 @@ class HealthMetricService(
     private val healthMetricRepository: HealthMetricRepository
 ) {
     // Helper function to check port
-    fun checkPort(ip: String, port: Int): Boolean {
+    fun checkPort(ip: String, port: Int? = 8080): Boolean {
         return try {
             Socket().use { socket ->
-                socket.connect(InetSocketAddress(ip, port))
+                socket.connect(InetSocketAddress(ip, port!!))
                 true
             }
         } catch (e: Exception) {

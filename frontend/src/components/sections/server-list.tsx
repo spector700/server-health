@@ -59,8 +59,7 @@ export function ServerList() {
                                 onClick={() => {
                                     console.log("delete server", server);
                                     deleteMutation.mutate(server.id)
-                                }
-                                }
+                                }}
                             ><TrashIcon/></Button>
                         </CardAction>
                     </CardHeader>

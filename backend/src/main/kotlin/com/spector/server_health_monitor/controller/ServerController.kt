@@ -14,7 +14,7 @@ class ServerController(val serverService: ServerService) {
         val hostname: String?,
         val checkType: String = "ping",
         val ipAddress: String,
-        val port: Int,
+        val port: Int? = null,
         val location: String? = null
     )
 

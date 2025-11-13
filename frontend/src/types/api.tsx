@@ -15,7 +15,7 @@ export interface CreateServerRequest {
     hostname: string;
     checkType: 'ping' | 'port'
     ipAddress?: string;
-    port: number;
+    port?: number;
     location?: string;
 }
 
@@ -24,7 +24,7 @@ export interface UpdateServerRequest {
     hostname: string;
     checkType: 'ping' | 'port'
     ipAddress?: string;
-    port: number;
+    port?: number;
     location?: string;
 }
 

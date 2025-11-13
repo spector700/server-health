@@ -16,8 +16,9 @@ export function CreateServerButton() {
         mutationFn: async (values: ServerFormValues) => {
             return serverApi.createServer({
                 ...values,
-                ipAddress: values.ipAddress || undefined,
-                location: values.location || undefined,
+                // ipAddress: values.ipAddress || undefined,
+                // port: values.port || undefined,
+                // location: values.location || undefined,
             })
         },
         onSuccess: async (newServer) => {
@@ -58,7 +59,6 @@ export function CreateServerButton() {
                                 error={createMutation.error instanceof Error ? createMutation.error.message : undefined}
                                 submitLabel="Create"
                     >
-
                     </ServerForm>
                 </DialogContent>
             </Dialog>
